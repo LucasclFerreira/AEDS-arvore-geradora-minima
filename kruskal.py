@@ -31,12 +31,14 @@ class Grafo:
         # preenchendo conjunto com os vertices isolados
         for vertice in range(self.numero_vertices):
             conjunto.append(self.grafo[vertice])
-        print(conjunto)
+        #print(conjunto)
 
-        # iterando por cada aresta no grafo
-        for vertice in conjunto:
-            for key, value in vertice.items():
-                print(key, value)
+        arestas = []
+        for _, value in self.grafo.items():
+            arestas = arestas + sorted(value.items(), key=lambda x:x[1])
+        arestasOrdenadas = sorted(arestas, key=lambda x:x[1])
+        print("Arestas ordenadas:", arestasOrdenadas)
+        
         
 
 
