@@ -12,6 +12,12 @@ class Grafo:
         if origem in self.grafo and destino in self.grafo:
             self.grafo[origem][destino] = peso
             self.grafo[destino][origem] = peso
+    
+    def remover_aresta(self, origem, destino):
+        if origem in self.grafo and destino in self.grafo:
+            del self.grafo[origem][destino]
+            del self.grafo[destino][origem]
+
 
     def obter_adjacentes(self, vertice):
         if vertice in self.grafo:
@@ -25,44 +31,36 @@ class Grafo:
             print(f"Vertice {vertice}: {adjacentes}")
     
     def kruskal(self):
-        # conjunto vazio para inicializar o kruskal
         conjuntos = []
-
-        # preenchendo conjunto com os vertices isolados
+        arestas = []
+        agm = self.grafo
         for vertice in self.grafo:
             conjuntos.append(set([vertice]))
         print(conjuntos)
-
-        arestas = []
         for origem, adjacentes in self.grafo.items():
             for destinatario in adjacentes.items():
                 destinatario = tuple([origem]) + destinatario
                 arestas.append(destinatario)
-
         arestasOrdenadas = sorted(arestas, key=lambda x:x[2])
-        print("Arestas ordenadas:", arestasOrdenadas)
-
-        cont = 0
         for aresta in arestasOrdenadas:
-            print("CONJUNTO DE V1:", self.conjuntoDe(aresta[0], conjuntos))
-            print("CONJUNTO DE V2:", self.conjuntoDe(aresta[1], conjuntos))
-            if self.conjuntoDe(aresta[0], conjuntos) != self.conjuntoDe(aresta[1], conjuntos):
-                print("os conjuntos são DIFERENTES")
-                cont += 1
-                conjuntos = self.aplicarUniao(aresta[0], aresta[1], conjuntos)
-            print("")
-        print(cont)
+            conjunto1 = self.conjuntoDe(aresta[0], conjuntos)
+            conjunto2 = self.conjuntoDe(aresta[1], conjuntos)
+            # print("arestas:", aresta[0], aresta[1])
+            # print("conjuntos:", conjunto1, conjunto2)
+            if conjunto1 != conjunto2:
+                conjuntos = self.aplicarUniao(self.conjuntoDe(aresta[0], conjuntos), self.conjuntoDe(aresta[1], conjuntos), conjuntos)
         return conjuntos
     
     def aplicarUniao(self, origem, destino, conjuntos):
-        for conjunto in conjuntos:
-            if destino in conjunto:
-                conjuntoDestino = conjunto
-                conjuntos.remove(conjunto)
-
-        for conjunto in conjuntos:
-            if origem in conjunto:
-                conjunto.add(conjuntoDestino)
+        print("conjuntos:", origem, destino)
+        if origem in conjuntos:
+            conjuntos.remove(origem)
+        if destino in conjuntos:
+            conjuntos.remove(destino)
+        uniao = origem | destino
+        print(uniao)
+        conjuntos.append(uniao)
+        print("conj resultante:", conjuntos)
         return conjuntos
 
     def conjuntoDe(self, vertice, conjuntos):
