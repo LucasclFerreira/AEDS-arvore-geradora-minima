@@ -15,8 +15,10 @@ class Grafo:
     
     def remover_aresta(self, origem, destino):
         if origem in self.grafo and destino in self.grafo:
-            del self.grafo[origem][destino]
-            del self.grafo[destino][origem]
+            if destino in self.grafo[origem]:
+                del self.grafo[origem][destino]
+            if origem in self.grafo[destino]:
+                del self.grafo[destino][origem]
 
 
     def obter_adjacentes(self, vertice):
@@ -33,10 +35,10 @@ class Grafo:
     def kruskal(self):
         conjuntos = []
         arestas = []
-        agm = self.grafo
+        agm = Grafo()
         for vertice in self.grafo:
             conjuntos.append(set([vertice]))
-        print(conjuntos)
+            agm.adicionar_vertice(vertice)
         for origem, adjacentes in self.grafo.items():
             for destinatario in adjacentes.items():
                 destinatario = tuple([origem]) + destinatario
@@ -45,11 +47,10 @@ class Grafo:
         for aresta in arestasOrdenadas:
             conjunto1 = self.conjuntoDe(aresta[0], conjuntos)
             conjunto2 = self.conjuntoDe(aresta[1], conjuntos)
-            # print("arestas:", aresta[0], aresta[1])
-            # print("conjuntos:", conjunto1, conjunto2)
             if conjunto1 != conjunto2:
                 conjuntos = self.aplicarUniao(self.conjuntoDe(aresta[0], conjuntos), self.conjuntoDe(aresta[1], conjuntos), conjuntos)
-        return conjuntos
+                agm.adicionar_aresta(aresta[0], aresta[1], aresta[2])
+        return agm
     
     def aplicarUniao(self, origem, destino, conjuntos):
         print("conjuntos:", origem, destino)
@@ -106,5 +107,6 @@ grafo.adicionar_aresta(7, 8, 7)
 grafo.exibir_grafo()
 
 # kruskal
+agm = grafo
 agm = grafo.kruskal()
-print(agm)
+agm.exibir_grafo()
